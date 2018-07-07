@@ -96,6 +96,26 @@ function getLongestShipImgName(parameterArray) {
   return parameterArray[index].image;
 }
 
+function getObjectToString(parameterObject) {
+  var objectKeys = Object.keys(parameterObject);
+  var output = '';
+  for (var i = 0; i < objectKeys.length; i++) {
+    output += `${objectKeys[i]}: ${parameterObject[objectKeys[i]]}\n`;
+  }
+
+  return output;
+}
+
+function getShipByName(parameterArray, parameterName) {
+  for (var i = 0; i < parameterArray.length; i++) {
+    if (parameterArray[i].model.toUpperCase().indexOf(parameterName.toUpperCase()) > -1) {
+      return parameterArray[i];
+    }
+  }
+
+  return {value: 'A keresett űrhajó nem található'};
+}
+
 function getData(url, callbackFunc) {
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function () {
@@ -124,7 +144,6 @@ function successAjax(xhttp) {
   console.log(doObjectArrayToString(userDatas));
 
   /* 5. Készítened kell egy statisztikát, mely kiírja a következő statisztikai adatokat:
-
   * Egy fős (crew = 1) legénységgel rendelkező hajók darabszáma.
   * A legnagyobb cargo_capacity-vel rendelkező hajó neve (model)
   * Az összes hajó utasainak (passengers) összesített száma
@@ -133,5 +152,14 @@ function successAjax(xhttp) {
   console.log(`A legnagyobb cargo_capacity-vel rendelkező hajó neve: ${getBiggestCargoShip(userDatas)}`);
   console.log(`Az összes hajó utasainak összesített száma: ${getTotalPAssengerCount(userDatas)}`);
   console.log(`A leghosszabb hajó képének a neve: ${getLongestShipImgName(userDatas)}`);
+
+  /* 6. Legyen lehetőség a hajókra rákeresni _model_ szerint. (logaritmikus/binary sort)
+  * A keresett nevet paraméterként kapja a függvényed.
+  * A keresés nem case sensitive
+  * Nem csak teljes egyezést vizsgálunk, tehát ha a keresett szöveg szerepel a hajó nevében már az is találat
+  * Ha több találatunk is lenne, azt a hajót adjuk vissza, amelyiknek a neve ABC sorrendben a legelső lenne.
+  * Írasd ki a hajó adatait. */
+  console.log('A keresett űrhajó:');
+  console.log(getObjectToString(getShipByName(userDatas, 'X-W')));
 }
 getData('/json/spaceships.json', successAjax);
