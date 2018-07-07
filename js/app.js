@@ -4,7 +4,7 @@ function doAdvancedBubbleSortByKey(parameterArray, parameterKey) {
   while (index > 1) {
     var switched = 0;
     for (var i = 0; i < index - 1; i++) {
-      if (parseInt(parameterArray[i][parameterKey], 10) > parseInt(parameterArray[i + 1][parameterKey], 10)) {
+      if (parameterArray[i][parameterKey] > parameterArray[i + 1][parameterKey]) {
         [parameterArray[i], parameterArray[i + 1]] = [parameterArray[i + 1], parameterArray[i]];
         switched = i;
       }
@@ -20,6 +20,17 @@ function doRemoveConsumablesWithNull(parameterArray) {
       parameterArray.splice(i, 1);
       i--;
       endIndex--;
+    }
+  }
+}
+
+function doChangeNullPropertiesToUnknown(parameterArray) {
+  var objectKeys = Object.keys(parameterArray[0]);
+  for (var i = 0; i < parameterArray.length; i++) {
+    for (var j = 0; j < objectKeys.length; j++) {
+      if (parameterArray[i][objectKeys[j]] === null) {
+        parameterArray[i][objectKeys[j]] = 'unknown';
+      }
     }
   }
 }
@@ -44,6 +55,9 @@ function successAjax(xhttp) {
   /* 2. Töröld az összes olyan adatot (tehát az objektumot a tömbből), ahol a consumables értéke NULL.
   Fontos, hogy ne csak undefined-ra állítsd a tömbelemet!!! */
   doRemoveConsumablesWithNull(userDatas);
+
+  /* 3. Az összes NULL értéket (minden objektum minden tulajdonságánál) módosítsd "unknown"-ra */
+  doChangeNullPropertiesToUnknown(userDatas);
   console.log(userDatas);
 }
 getData('/json/spaceships.json', successAjax);
