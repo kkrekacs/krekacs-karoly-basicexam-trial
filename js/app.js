@@ -46,6 +46,19 @@ function getData(url, callbackFunc) {
   xhttp.send();
 }
 
+function doObjectArrayToString(parameterArray) {
+  var output = 'A hajók listája:\n\n';
+  var objectKeys = Object.keys(parameterArray[0]);
+  for (var i = 0; i < parameterArray.length; i++) {
+    for (var j = 0; j < objectKeys.length; j++) {
+      output += `${objectKeys[j]}: ${parameterArray[i][objectKeys[j]]}\n`;
+    }
+    output += '\n';
+  }
+
+  return output;
+}
+
 function successAjax(xhttp) {
   // Innen lesz elérhető a JSON file tartalma, tehát az adatok amikkel dolgoznod kell
   var userDatas = JSON.parse(xhttp.responseText);
@@ -58,6 +71,8 @@ function successAjax(xhttp) {
 
   /* 3. Az összes NULL értéket (minden objektum minden tulajdonságánál) módosítsd "unknown"-ra */
   doChangeNullPropertiesToUnknown(userDatas);
-  console.log(userDatas);
+
+  /* 4. Írasd ki így kapott hajók adatait. */
+  console.log(doObjectArrayToString(userDatas));
 }
 getData('/json/spaceships.json', successAjax);
