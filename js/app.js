@@ -35,17 +35,6 @@ function doChangeNullPropertiesToUnknown(parameterArray) {
   }
 }
 
-function getData(url, callbackFunc) {
-  var xhttp = new XMLHttpRequest();
-  xhttp.onreadystatechange = function () {
-    if (this.readyState === 4 && this.status === 200) {
-      callbackFunc(this);
-    }
-  };
-  xhttp.open('GET', url, true);
-  xhttp.send();
-}
-
 function doObjectArrayToString(parameterArray) {
   var output = 'A hajók listája:\n\n';
   var objectKeys = Object.keys(parameterArray[0]);
@@ -57,6 +46,65 @@ function doObjectArrayToString(parameterArray) {
   }
 
   return output;
+}
+
+function doCountShipsWithSingleCrew(parameterArray) {
+  var shipCount = 0;
+  for (var i = 1; i < parameterArray.length; i++) {
+    if (parameterArray[i].crew === '1') {
+      shipCount++;
+    }
+  }
+
+  return shipCount;
+}
+
+function getBiggestCargoShip(parameterArray) {
+  var biggestCargo = parseInt(parameterArray[0].cargo_capacity, 10);
+  var index = 0;
+  for (var i = 1; i < parameterArray.length; i++) {
+    if (biggestCargo < parseInt(parameterArray[i].cargo_capacity, 10)) {
+      biggestCargo = parameterArray[i].cargo_capacity;
+      index = i;
+    }
+  }
+
+  return parameterArray[index].model;
+}
+
+function getTotalPAssengerCount(parameterArray) {
+  var totalPassengers = 0;
+  for (var i = 0; i < parameterArray.length; i++) {
+    if (!isNaN(parseInt(parameterArray[i].passengers, 10))) {
+      totalPassengers += parseInt(parameterArray[i].passengers, 10);
+    }
+  }
+
+  return totalPassengers;
+}
+
+function getLongestShipImgName(parameterArray) {
+  var index = 0;
+  var longestShip = parseInt(parameterArray[0].lengthiness, 10);
+  for (var i = 1; i < parameterArray.length; i++) {
+    if (longestShip < parseInt(parameterArray[i].lengthiness, 10)) {
+      longestShip = parseInt(parameterArray[i].lengthiness, 10);
+      index = i;
+    }
+  }
+
+  return parameterArray[index].image;
+}
+
+function getData(url, callbackFunc) {
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function () {
+    if (this.readyState === 4 && this.status === 200) {
+      callbackFunc(this);
+    }
+  };
+  xhttp.open('GET', url, true);
+  xhttp.send();
 }
 
 function successAjax(xhttp) {
@@ -74,5 +122,16 @@ function successAjax(xhttp) {
 
   /* 4. Írasd ki így kapott hajók adatait. */
   console.log(doObjectArrayToString(userDatas));
+
+  /* 5. Készítened kell egy statisztikát, mely kiírja a következő statisztikai adatokat:
+
+  * Egy fős (crew = 1) legénységgel rendelkező hajók darabszáma.
+  * A legnagyobb cargo_capacity-vel rendelkező hajó neve (model)
+  * Az összes hajó utasainak (passengers) összesített száma
+  * A leghosszabb(lengthiness) hajó képének a neve */
+  console.log(`Egy fős legénységgel rendelkező hajók darabszáma: ${doCountShipsWithSingleCrew(userDatas)}`);
+  console.log(`A legnagyobb cargo_capacity-vel rendelkező hajó neve: ${getBiggestCargoShip(userDatas)}`);
+  console.log(`Az összes hajó utasainak összesített száma: ${getTotalPAssengerCount(userDatas)}`);
+  console.log(`A leghosszabb hajó képének a neve: ${getLongestShipImgName(userDatas)}`);
 }
 getData('/json/spaceships.json', successAjax);
