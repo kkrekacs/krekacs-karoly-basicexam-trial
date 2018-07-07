@@ -1,0 +1,1 @@
+# krekacs-karoly-basicexam-trial
