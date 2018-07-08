@@ -1,10 +1,18 @@
 // ide deklaráljátok a függvényeket.
+function getIntegerValue(parameterObjectProperty) {
+  if (typeof parameterObjectProperty === 'object') {
+    return 0;
+  }
+  return parseInt(parameterObjectProperty, 10);
+}
+
 function doAdvancedBubbleSortByKey(parameterArray, parameterKey) {
-  var index = parameterArray.length;
-  while (index > 1) {
-    var switched = 0;
-    for (var i = 0; i < index - 1; i++) {
-      if (parameterArray[i][parameterKey] > parameterArray[i + 1][parameterKey]) {
+  var index = parameterArray.length - 1;
+  var switched;
+  while (index > 0) {
+    switched = 0;
+    for (var i = 0; i < index; i++) {
+      if (getIntegerValue(parameterArray[i][parameterKey]) > getIntegerValue(parameterArray[i + 1][parameterKey])) {
         [parameterArray[i], parameterArray[i + 1]] = [parameterArray[i + 1], parameterArray[i]];
         switched = i;
       }
@@ -28,7 +36,7 @@ function doChangeNullPropertiesToUnknown(parameterArray) {
   var objectKeys = Object.keys(parameterArray[0]);
   for (var i = 0; i < parameterArray.length; i++) {
     for (var j = 0; j < objectKeys.length; j++) {
-      if (parameterArray[i][objectKeys[j]] === null) {
+      if (typeof parameterArray[i][objectKeys[j]] === 'object') {
         parameterArray[i][objectKeys[j]] = 'unknown';
       }
     }
